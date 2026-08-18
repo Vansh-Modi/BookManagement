@@ -1,0 +1,178 @@
+﻿CREATE PROCEDURE [dbo].[AddBooking]
+	@UserID INT,
+	@CatId INT,
+	@MovieId INT,
+	@NoOfTickets INT,
+	@Amount INT
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	INSERT INTO Tbl_Booking(User_ID, Cat_ID, Movie_ID, no_of_Tickets, amount)
+	VALUES(@UserID, @CatId, @MovieId, @NoOfTickets, @Amount);
+END
+
+
+
+CREATE PROCEDURE [dbo].[AddMovie]
+	@Name NVARCHAR(MAX) ,
+	@Date DATE ,
+	@Cat_ID	INT , 
+	@Rate INT
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	INSERT INTO Tbl_Movie(Movie_name, Release_Date, Cat_ID, rate)
+	VALUES(@Name, @Date, @Cat_ID, @Rate);
+END
+
+CREATE PROCEDURE [dbo].[AddMovieCategory]
+	@Name NVARCHAR(MAX)
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	INSERT INTO Tbl_Movie_Category(Cat_Type)
+	VALUES(@Name);
+END
+
+
+CREATE PROCEDURE [dbo].[AddUser]
+	@Name NVARCHAR(50) ,
+	@Email NVARCHAR(50) ,
+	@Password NVARCHAR(15) ,
+	@City NVARCHAR(50) ,
+	@Phone NVARCHAR(15)
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	INSERT INTO Tbl_User(User_Name, Email_ID, User_password, City, PhoneNo)
+	VALUES(@Name, @Email, @Password, @City, @Phone);
+END
+
+CREATE PROCEDURE [dbo].[DeleteBooking]
+	@booking_ID int
+AS
+BEGIN
+SET NOCOUNT ON;
+	DELETE FROM Tbl_Booking
+		WHERE booking_ID = @booking_ID
+END
+
+CREATE PROCEDURE [dbo].[DeleteUser]
+	@User_ID int
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	DELETE FROM Tbl_User
+		WHERE User_ID = @User_ID;
+END
+
+CREATE PROCEDURE [dbo].[DeleteCategory]
+	@Cat_ID INT 
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	DELETE FROM Tbl_Movie_Category
+		WHERE Cat_ID = @Cat_ID;
+END
+
+CREATE PROCEDURE [dbo].[DeleteMovie]
+	@Movie_ID INT
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	DELETE FROM Tbl_Movie
+	WHERE Movie_ID = @Movie_ID;
+END
+
+CREATE PROCEDURE [dbo].[DisplayBooking]
+AS
+	SELECT * FROM Tbl_Booking;
+RETURN 0
+
+CREATE PROCEDURE [dbo].[DisplayCategory]
+AS
+	SELECT * FROM Tbl_Movie_Category;
+RETURN 0
+
+CREATE PROCEDURE [dbo].[DisplayUsers]
+AS
+	SELECT * FROM Tbl_User;
+RETURN 0
+
+CREATE PROCEDURE [dbo].[DisplayMovies]
+AS
+	SELECT * FROM Tbl_Movie;
+RETURN 0
+
+CREATE PROCEDURE [dbo].[LoginUser]
+	@Name int = 0,
+	@Pass int
+AS
+BEGIN 
+SET NOCOUNT ON;
+	SELECT COUNT(*) AS UserCount FROM Tbl_User WHERE User_Name = @Name AND User_password = @Pass;
+END
+
+CREATE PROCEDURE [dbo].[UpdateUser]
+	@Name varchar(50), 
+	@Email varchar(50),
+	@Password varchar(15),
+	@City varchar(50),
+	@Phone varchar(15),
+	@User_ID int
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	UPDATE Tbl_User SET User_name = @Name, Email_ID = @Email, User_password = @Password, City = @City, PhoneNo = @Phone
+	WHERE User_ID = @User_ID;
+END
+
+CREATE PROCEDURE [dbo].[UpdateMovieCategory]
+	@CatId int,
+	@Name nvarchar(MAX) 
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	UPDATE Tbl_Movie_Category SET Cat_Type = @Name
+	WHERE Cat_ID = @CatId
+END
+
+
+CREATE PROCEDURE [dbo].[UpdateMovie]
+	@CatId int,
+	@Name nvarchar(MAX), 
+	@Date date,
+	@rate int,
+	@Movie_ID INT
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	UPDATE Tbl_Movie SET Movie_name = @Name, Release_Date = @Date, rate = @rate, Cat_ID = @CatId
+	WHERE Movie_ID = @Movie_ID;
+END
+
+
+CREATE PROCEDURE [dbo].[UpdateBooking]
+	@Cat_ID INT,
+	@User_ID INT,
+	@Movie_ID INT,
+	@amount INT,
+	@no_of_tickets INT,
+	@Booking_ID INT
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	UPDATE Tbl_Booking SET Cat_ID = @Cat_ID, User_ID = @User_ID, Movie_ID = @Movie_ID, amount = @amount, no_of_tickets = @no_of_tickets
+	WHERE booking_ID = @Booking_ID;
+END
