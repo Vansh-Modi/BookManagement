@@ -11,14 +11,12 @@ namespace movieBooking.Models
     public class Movie
     {
         public ConnectionData cd { get; set; } = new ConnectionData();
-
-
         public bool fnAddCategory()
         {
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("AddCategory", conn))
+                using (SqlCommand cmd = new SqlCommand("AddMovieCategory", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("Name", cd.Cat_Type);
@@ -87,7 +85,7 @@ namespace movieBooking.Models
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("DisplayUser", conn))
+                using (SqlCommand cmd = new SqlCommand("DisplayUsers", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
@@ -117,17 +115,17 @@ namespace movieBooking.Models
         public List<Movie> fnDisplayMovie()
         {
             List<Movie> movies = new List<Movie>();
-            using(SqlConnection conn = new SqlConnection(cd.Connection()))
+            using (SqlConnection conn = new SqlConnection(cd.Connection()))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("DisplayMovie", conn))
+                using (SqlCommand cmd = new SqlCommand("DisplayMovies", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    using(SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         DataTable dt = new DataTable();
                         adapter.Fill(dt);
-                        foreach(DataRow row in dt.Rows)
+                        foreach (DataRow row in dt.Rows)
                         {
                             ConnectionData movieData = new ConnectionData
                             {
@@ -152,7 +150,7 @@ namespace movieBooking.Models
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("DisplayMovie", conn))
+                using (SqlCommand cmd = new SqlCommand("DisplayBooking", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
@@ -164,7 +162,7 @@ namespace movieBooking.Models
                             ConnectionData movieData = new ConnectionData
                             {
                                 booking_ID = Convert.ToInt32(row["Movie_ID"]),
-                                
+
                                 User_ID = Convert.ToInt32(row["User_ID"]),
                                 Movie_ID = Convert.ToInt32(row["Movie_ID"]),
                                 Cat_ID = Convert.ToInt32(row["Cat_ID"]),
@@ -197,6 +195,47 @@ namespace movieBooking.Models
             }
             return dt;
         }
-
+        public bool fnDeleteBooking(int bookingId)
+        {
+            using (SqlConnection conn = new SqlConnection(cd.Connection()))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("DeleteBooking", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("booking_ID", bookingId);
+                    int i = cmd.ExecuteNonQuery();
+                    return i > 0;
+                }
+            }
+        }
+        public bool fnDeleteMovie(int movieId)
+        {
+            using (SqlConnection conn = new SqlConnection(cd.Connection()))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("DeleteMovie", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("Movie_ID", movieId);
+                    int i = cmd.ExecuteNonQuery();
+                    return i > 0;
+                }
+            }
+        }
+        public bool fnDeleteUser(int userId)
+        {
+            using (SqlConnection conn = new SqlConnection(cd.Connection()))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("DeleteUser", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("User_ID", userId);
+                    int i = cmd.ExecuteNonQuery();
+                    return i > 0;
+                }
+            }
+        }
     }
 }

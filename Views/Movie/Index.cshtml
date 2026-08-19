@@ -1,0 +1,116 @@
+﻿@model IEnumerable<movieBooking.Models.Movie>
+
+@{
+    ViewBag.Title = "Movie Management Dashboard";
+}
+
+<h2>Movie Management Dashboard</h2>
+
+<p>
+    @Html.ActionLink("Add New Movie", "AddMovie") |
+    @Html.ActionLink("Add New Booking", "AddBooking") |
+    @Html.ActionLink("Add New User", "AddUser") 
+</p>
+
+<!-- 1. MOVIES TABLE -->
+<h3>Movies List</h3>
+<table class="table">
+    <tr>
+        <th>Movie Name</th>
+        <th>Release Date</th>
+        <th>Rate</th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.cd.Movie_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cd.Release_Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cd.rate)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditMovie", new { id = item.cd.Movie_ID }) |
+                @Html.ActionLink("Details", "DetailsMovie", new { id = item.cd.Movie_ID }) |
+                @Html.ActionLink("Delete", "DeleteMovie", new { id = item.cd.Movie_ID })
+            </td>
+        </tr>
+    }
+</table>
+
+<hr />
+
+<!-- 2. BOOKINGS TABLE -->
+<h3>Bookings List</h3>
+<table class="table">
+    <tr>
+        <th>Booking ID</th>
+        <th>Tickets</th>
+        <th>Amount</th>
+        <th>Actions</th>
+    </tr>
+
+    @if (ViewBag.BookingList != null)
+    {
+        foreach (var booking in (List<movieBooking.Models.Movie>)ViewBag.BookingList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => booking.cd.booking_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => booking.cd.no_of_Tickets)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => booking.cd.amount)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditBooking", new { id = booking.cd.booking_ID }) |
+                    @Html.ActionLink("Details", "DetailsBooking", new { id = booking.cd.booking_ID }) |
+                    @Html.ActionLink("Delete", "DeleteBooking", new { id = booking.cd.booking_ID })
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+<hr />
+
+<!-- 3. USERS TABLE -->
+<h3>Users List</h3>
+<table class="table">
+    <tr>
+        <th>User Name</th>
+        <th>Email ID</th>
+        <th>City</th>
+        <th>Actions</th>
+    </tr>
+
+    @if (ViewBag.UserList != null)
+    {
+        foreach (var user in (List<movieBooking.Models.Movie>)ViewBag.UserList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => user.cd.User_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.cd.Email_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.cd.City)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditUser", new { id = user.cd.User_ID }) |
+                    @Html.ActionLink("Details", "DetailsUser", new { id = user.cd.User_ID }) |
+                    @Html.ActionLink("Delete", "DeleteUser", new { id = user.cd.User_ID })
+                </td>
+            </tr>
+        }
+    }
+</table>

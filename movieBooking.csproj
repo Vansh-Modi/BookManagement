@@ -271,7 +271,9 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.7.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.0.min.map" />
-    <Content Include="Views\Movie\AddMovieCategory.cshtml" />
+    <Content Include="Views\Movie\AddMovie.cshtml" />
+    <Content Include="Views\Movie\AddCategory.cshtml" />
+    <Content Include="Views\Movie\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -13,7 +13,13 @@ namespace movieBooking.Controllers
         // GET: Movie
         public ActionResult Index()
         {
-            return View();
+            Movie movieDisplay = new Movie();
+            List<Movie> movieList = movieDisplay.fnDisplayMovie();
+            List<Movie> bookingList = movieDisplay.fnDisplayBooking();
+            List<Movie> userList = movieDisplay.fnDisplayUsers();
+            ViewBag.BookingList = bookingList;
+            ViewBag.userList = userList;
+            return View(movieList);
         }
 
         // GET: Movie/Details/5
@@ -24,32 +30,70 @@ namespace movieBooking.Controllers
 
         // GET: Movie/Create
         [HttpGet]
-        public ActionResult AddMovieCategory()
+        public ActionResult AddCategory()
+        {
+            Movie movie = new Movie();
+            return View(movie);
+        }
+
+        [HttpPost]
+        public ActionResult AddCategory(Movie movie)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    bool success = movie.fnAddCategory();
+                    if (success)
+                    {
+                        return RedirectToAction("AddMovie", "Movie");
+                    }
+                }
+                return View(movie);
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Movie/Create
+        [HttpGet]
+        public ActionResult AddMovie()
         {
             Movie movie = new Movie();
             DataTable categoryTable = movie.fnGetCategoryDropdown();
-            ViewBag.CatgeogryList = new SelectList(categoryTable.DefaultView, "Cat_ID", "Cat_Type");
+            ViewBag.CategoryList = new SelectList(categoryTable.DefaultView, "Cat_ID", "Cat_Type");
             return View(movie);
         }
 
         // POST: Movie/Create
         [HttpPost]
-        public ActionResult AddMovieCategory(Movie movie)
+        public ActionResult AddMovie(Movie movie)
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     bool success = movie.fnAddMovie();
-                    if(success) 
-                        return RedirectToAction("Index");
+                    if (success)
+                    {
+                        ModelState.Clear();
+                        Movie newMovie = new Movie();
+                        DataTable categoryTable = newMovie.fnGetCategoryDropdown();
+                        ViewBag.CategoryList = new SelectList(categoryTable.DefaultView, "Cat_ID", "Cat_Type");
+                        return View(newMovie);
+                    }
                 }
                 // TODO: Add insert logic here
-                ViewBag.CatgeogryList = new SelectList(movie.fnGetCategoryDropdown().DefaultView, "Cat_ID", "Cat_Type");
+
+                ViewBag.CategoryList = new SelectList(movie.fnGetCategoryDropdown().DefaultView, "Cat_ID", "Cat_Type");
                 return View(movie);
             }
             catch
             {
+                DataTable categoryTable = movie.fnGetCategoryDropdown();
+                ViewBag.CategoryList = new SelectList(categoryTable.DefaultView, "Cat_ID", "Cat_Type");
                 return View(movie);
             }
         }
@@ -77,8 +121,16 @@ namespace movieBooking.Controllers
         }
 
         // GET: Movie/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int? id)
         {
+            if(id == null)
+                return RedirectToAction("Index");
+            Movie movie = new Movie();
+            bool isDeleted = movie.fnDeleteMovie(id.Value);
+            if(isDeleted)
+                TempData["Message"] = "Movie deleted successfully.";
+            else
+                TempData["Message"] = "Failed to delete the movie.";
             return View();
         }
 
@@ -88,6 +140,21 @@ namespace movieBooking.Controllers
         {
             try
             {
+                if(ModelState.IsValid)
+                {
+                    Movie movie = new Movie();
+                    bool isDeleted = movie.fnDeleteMovie(id);
+                    if (isDeleted)
+                    {
+                        ViewBag.Message = "Movie deleted successfully.";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Failed to delete the movie.";
+                        return View();
+                    }
+                }
                 // TODO: Add delete logic here
 
                 return RedirectToAction("Index");
