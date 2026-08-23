@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<movieBooking.Models.Movie>
+@using System.Data
 
 @{
     ViewBag.Title = "Movie Management Dashboard";
@@ -8,9 +9,32 @@
 
 <p>
     @Html.ActionLink("Add New Movie", "AddMovie") |
-    @Html.ActionLink("Add New Booking", "AddBooking") |
-    @Html.ActionLink("Add New User", "AddUser") 
+    @Html.ActionLink("Book Tickets", "../Booking/Index") |
+    @Html.ActionLink("Profile", "../Login/Index")
 </p>
+
+<!-- SEARCH / CATEGORY FILTER FORM -->
+@using (Html.BeginForm("Index", "Movie", FormMethod.Get))
+{
+    <div class="form-horizontal" style="margin-bottom: 20px;">
+        <div class="form-group">
+            <label class="control-label col-md-2">Filter by Category:</label>
+            <div class="col-md-6">
+                @Html.DropDownList(
+                    "searchCategory",
+                    (SelectList)ViewBag.CategoryList,
+                    "All Categories",
+                    new { @class = "form-control", @onchange = "this.form.submit();" })
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-default">Filter</button>
+                @Html.ActionLink("Reset", "Index", null, new { @class = "btn btn-secondary" })
+            </div>
+        </div>
+    </div>
+}
+
+<hr />
 
 <!-- 1. MOVIES TABLE -->
 <h3>Movies List</h3>
@@ -22,95 +46,36 @@
         <th>Actions</th>
     </tr>
 
-    @foreach (var item in Model)
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.Movie_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.Release_Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.rate)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditMovie", new { id = item.cd.Movie_ID }) |
+                    @Html.ActionLink("Book Tickets", "Details", new { Movie_ID = item.cd.Movie_ID, Cat_ID = item.cd.Cat_ID }) |
+                    @Html.ActionLink("Delete", "DeleteMovie", new { id = item.cd.Movie_ID })
+                </td>
+            </tr>
+        }
+    }
+    else
     {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.cd.Movie_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cd.Release_Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cd.rate)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "EditMovie", new { id = item.cd.Movie_ID }) |
-                @Html.ActionLink("Details", "DetailsMovie", new { id = item.cd.Movie_ID }) |
-                @Html.ActionLink("Delete", "DeleteMovie", new { id = item.cd.Movie_ID })
-            </td>
+            <td colspan="4" class="text-center text-muted">No movies found.</td>
         </tr>
     }
 </table>
 
-<hr />
-
-<!-- 2. BOOKINGS TABLE -->
-<h3>Bookings List</h3>
-<table class="table">
-    <tr>
-        <th>Booking ID</th>
-        <th>Tickets</th>
-        <th>Amount</th>
-        <th>Actions</th>
-    </tr>
-
-    @if (ViewBag.BookingList != null)
-    {
-        foreach (var booking in (List<movieBooking.Models.Movie>)ViewBag.BookingList)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => booking.cd.booking_ID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => booking.cd.no_of_Tickets)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => booking.cd.amount)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "EditBooking", new { id = booking.cd.booking_ID }) |
-                    @Html.ActionLink("Details", "DetailsBooking", new { id = booking.cd.booking_ID }) |
-                    @Html.ActionLink("Delete", "DeleteBooking", new { id = booking.cd.booking_ID })
-                </td>
-            </tr>
-        }
-    }
-</table>
-
-<hr />
-
-<!-- 3. USERS TABLE -->
-<h3>Users List</h3>
-<table class="table">
-    <tr>
-        <th>User Name</th>
-        <th>Email ID</th>
-        <th>City</th>
-        <th>Actions</th>
-    </tr>
-
-    @if (ViewBag.UserList != null)
-    {
-        foreach (var user in (List<movieBooking.Models.Movie>)ViewBag.UserList)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => user.cd.User_Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => user.cd.Email_ID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => user.cd.City)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "EditUser", new { id = user.cd.User_ID }) |
-                    @Html.ActionLink("Details", "DetailsUser", new { id = user.cd.User_ID }) |
-                    @Html.ActionLink("Delete", "DeleteUser", new { id = user.cd.User_ID })
-                </td>
-            </tr>
-        }
-    }
-</table>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

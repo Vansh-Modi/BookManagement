@@ -176,3 +176,14 @@ SET NOCOUNT ON;
 	UPDATE Tbl_Booking SET Cat_ID = @Cat_ID, User_ID = @User_ID, Movie_ID = @Movie_ID, amount = @amount, no_of_tickets = @no_of_tickets
 	WHERE booking_ID = @Booking_ID;
 END
+
+
+
+CREATE PROCEDURE [dbo].[DisplayMovies]
+@Cat_ID INT = NULL
+AS
+BEGIN
+SET NOCOUNT ON;
+
+	SELECT * FROM Tbl_Movie WHERE (@Cat_ID IS NULL OR Cat_ID = @Cat_ID);
+END

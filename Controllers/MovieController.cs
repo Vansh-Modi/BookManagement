@@ -10,22 +10,31 @@ namespace movieBooking.Controllers
 {
     public class MovieController : Controller
     {
+
+
+
         // GET: Movie
-        public ActionResult Index()
+        public ActionResult Index(string searchCategory)
         {
             Movie movieDisplay = new Movie();
-            List<Movie> movieList = movieDisplay.fnDisplayMovie();
-            List<Movie> bookingList = movieDisplay.fnDisplayBooking();
-            List<Movie> userList = movieDisplay.fnDisplayUsers();
-            ViewBag.BookingList = bookingList;
-            ViewBag.userList = userList;
+            List<Movie> movieList = movieDisplay.fnDisplayMovie(searchCategory);
+            DataTable categoryTable = movieDisplay.fnGetCategoryDropdown();
+            ViewBag.CategoryList = new SelectList(categoryTable.DefaultView, "Cat_ID", "Cat_Type", searchCategory);
+
             return View(movieList);
         }
 
         // GET: Movie/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int Movie_ID, int Cat_ID)
         {
-            return View();
+            if (Session["UserID"] != null)
+            {
+                int tempvar = Convert.ToInt32(Session["UserID"]);
+                Session["UserID"] = tempvar;
+            }
+            Session["SelectedMovieID"] = Movie_ID;
+            Session["SelectedCategoryID"] = Cat_ID;
+            return RedirectToAction("Create", "Booking");
         }
 
         // GET: Movie/Create

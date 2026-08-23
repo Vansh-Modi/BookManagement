@@ -112,8 +112,9 @@ namespace movieBooking.Models
             }
             return userList;
         }
-        public List<Movie> fnDisplayMovie()
+        public List<Movie> fnDisplayMovie(string search)
         {
+            
             List<Movie> movies = new List<Movie>();
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
             {
@@ -121,17 +122,22 @@ namespace movieBooking.Models
                 using (SqlCommand cmd = new SqlCommand("DisplayMovies", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    if(string.IsNullOrEmpty(search))
+                        cmd.Parameters.AddWithValue("Cat_ID", DBNull.Value);
+                    else
+                    cmd.Parameters.AddWithValue("Cat_ID", Convert.ToInt32(search));
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         DataTable dt = new DataTable();
                         adapter.Fill(dt);
                         foreach (DataRow row in dt.Rows)
                         {
+                            DateTime parseDate = Convert.ToDateTime(row["Release_Date"]);
                             ConnectionData movieData = new ConnectionData
                             {
                                 Movie_ID = Convert.ToInt32(row["Movie_ID"]),
                                 Movie_name = row["Movie_Name"].ToString(),
-                                Release_Date = row["Release_Date"].ToString(),
+                                Release_Date = parseDate.ToString("yyyy-mm-dd"),
                                 Cat_ID = Convert.ToInt32(row["Cat_ID"]),
                                 rate = Convert.ToInt32(row["Rate"])
                             };
@@ -232,6 +238,20 @@ namespace movieBooking.Models
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("User_ID", userId);
+                    int i = cmd.ExecuteNonQuery();
+                    return i > 0;
+                }
+            }
+        }
+        public bool fnGetMovieID(int movieId)
+        {
+            using (SqlConnection conn = new SqlConnection(cd.Connection()))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("GetMovieID", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("Movie_ID", movieId);
                     int i = cmd.ExecuteNonQuery();
                     return i > 0;
                 }
