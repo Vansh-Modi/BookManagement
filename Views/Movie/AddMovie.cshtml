@@ -44,10 +44,10 @@
     </div>
         <br/>
     <div class="form-group">
-        @Html.LabelFor(model => model.cd.rate, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(model => model.cd.no_of_Tickets, "No of Tickets", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextAreaFor(model => model.cd.rate, new { @class = "form-control", rows = 4 })
-            @Html.ValidationMessageFor(model => model.cd.rate, "", new { @class = "text-danger" })
+            @Html.TextAreaFor(model => model.cd.no_of_Tickets, new { @class = "form-control", rows = 4 })
+            @Html.ValidationMessageFor(model => model.cd.no_of_Tickets, "", new { @class = "text-danger" })
         </div>
     </div>
         <br /><br />

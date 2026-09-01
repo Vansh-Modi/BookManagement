@@ -87,7 +87,7 @@ namespace movieBooking.Controllers
                     {
                         Session["UserID"] = UserID;
 
-                        if (Session["SelectedMoiveID"] != null || Session["SelectedCategoryID"] != null)
+                        if (Session["SelectedMovieID"] != null || Session["SelectedCategoryID"] != null)
                         {
                             int Movie_ID = Convert.ToInt32(Session["SelectedMovieID"]);
                             int Cat_ID = Convert.ToInt32(Session["SelectedMovieID"]);

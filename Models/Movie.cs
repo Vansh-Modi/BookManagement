@@ -48,8 +48,19 @@ namespace movieBooking.Models
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
             {
                 conn.Open();
+                using(SqlCommand cmd = new SqlCommand("GetRate", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("Movie_ID", cd.Movie_ID);
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        cd.rate = Convert.ToInt32(result);
+                    }
+                }
                 using (SqlCommand cmd = new SqlCommand("AddBooking", conn))
                 {
+                    cd.amount = cd.no_of_Tickets * cd.rate;
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("UserID", cd.User_ID);
                     cmd.Parameters.AddWithValue("MovieId", cd.Movie_ID);
@@ -63,7 +74,6 @@ namespace movieBooking.Models
         }
         public List<Movie> fnDisplayMovie(string search)
         {
-            
             List<Movie> movies = new List<Movie>();
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
             {
@@ -71,10 +81,11 @@ namespace movieBooking.Models
                 using (SqlCommand cmd = new SqlCommand("DisplayMovies", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    if(string.IsNullOrEmpty(search))
+                    if (string.IsNullOrEmpty(search))
                         cmd.Parameters.AddWithValue("Cat_ID", DBNull.Value);
                     else
-                    cmd.Parameters.AddWithValue("Cat_ID", Convert.ToInt32(search));
+                        cmd.Parameters.AddWithValue("Cat_ID", Convert.ToInt32(search));
+
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         DataTable dt = new DataTable();
@@ -86,7 +97,7 @@ namespace movieBooking.Models
                             {
                                 Movie_ID = Convert.ToInt32(row["Movie_ID"]),
                                 Movie_name = row["Movie_Name"].ToString(),
-                                Release_Date = parseDate.ToString("yyyy-mm-dd"),
+                                Release_Date = parseDate.ToString("yyyy-MM-dd"), // Fixed MM for months
                                 Cat_ID = Convert.ToInt32(row["Cat_ID"]),
                                 rate = Convert.ToInt32(row["Rate"])
                             };
@@ -99,6 +110,8 @@ namespace movieBooking.Models
             }
             return movies;
         }
+
+        
         public List<Movie> fnDisplayBooking()
         {
             List<Movie> movies = new List<Movie>();
@@ -190,8 +203,10 @@ namespace movieBooking.Models
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("Movie_ID", movieId);
-                    int i = cmd.ExecuteNonQuery();
-                    return i > 0;
+
+                    // Use ExecuteScalar if checking for existence or fetching a scalar value
+                    object result = cmd.ExecuteScalar();
+                    return result != null && result != DBNull.Value;
                 }
             }
         }

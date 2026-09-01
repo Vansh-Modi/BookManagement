@@ -93,9 +93,26 @@ END
 
 CREATE PROCEDURE [dbo].[DisplayBooking]
 AS
-	SELECT * FROM Tbl_Booking;
-RETURN 0
-
+BEGIN
+SET NOCOUNT ON;
+	SELECT b.booking_ID AS [booking_ID], 
+		   b.User_ID AS [User_ID], 
+		   b.Movie_ID AS [Movie_ID], 
+		   b.no_of_Tickets AS [no_of_Tickets], 
+		   b.Cat_ID AS [Cat_ID], 
+		   b.amount AS [amount], 
+		   c.Cat_Type AS [Cat_Type], 
+		   m.Movie_name AS [movie_name], 
+		   m.rate AS [rate], 
+		   m.Release_Date AS [date] 
+	FROM Tbl_Booking AS b 
+	JOIN Tbl_User AS u 
+		ON b.User_ID = u.User_ID 
+	JOIN Tbl_Movie AS m 
+		ON b.Movie_ID = m.Movie_ID 
+	JOIN Tbl_Movie_Category AS c 
+		ON b.Cat_ID = c.Cat_ID;
+END
 CREATE PROCEDURE [dbo].[DisplayCategory]
 AS
 	SELECT * FROM Tbl_Movie_Category;
@@ -186,4 +203,12 @@ BEGIN
 SET NOCOUNT ON;
 
 	SELECT * FROM Tbl_Movie WHERE (@Cat_ID IS NULL OR Cat_ID = @Cat_ID);
+END
+
+CREATE PROCEDURE [dbo].[GetRate]
+	@Movie_ID int
+AS
+SET NOCOUNT ON;
+BEGIN
+	SELECT rate FROM Tbl_Movie WHERE Movie_ID = @Movie_ID
 END

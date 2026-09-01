@@ -31,7 +31,7 @@ namespace movieBooking.Controllers
         // GET: Booking/Create
         public ActionResult Create()
         {
-            if(Session["UserID"] == null)
+            if (Session["UserID"] == null)
             {
                 return RedirectToAction("Login", "Login");
             }
@@ -39,30 +39,46 @@ namespace movieBooking.Controllers
         }
 
         // POST: Booking/Create
+        // POST: Booking/Create
         [HttpPost]
         public ActionResult Create(FormCollection collection)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (Session["UserID"] == null)
                 {
-                    Movie addMovie = new Movie();
-                    bool res = addMovie.fnAddBooking();
-                    if (res)
-                    {
-                        
-                    }
+                    return RedirectToAction("Login", "Login");
                 }
-                // TODO: Add insert logic here
 
-                return RedirectToAction("Index");
+                if (!ModelState.IsValid)
+                {
+                    return View(); // Returns the form with validation errors
+                }
+
+                Movie addMovie = new Movie();
+                addMovie.cd.User_ID = Convert.ToInt32(Session["UserID"]);
+
+                if (Session["SelectedMovieID"] != null || Session["SelectedCategoryID"] != null)
+                {
+                    addMovie.cd.Movie_ID = Convert.ToInt32(Session["SelectedMovieID"]);
+                    addMovie.cd.Cat_ID = Convert.ToInt32(Session["SelectedCategoryID"]);
+                }
+
+                bool res = addMovie.fnAddBooking();
+                if (res)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", "Error while adding booking.");
+                return View();
             }
             catch
             {
+                ModelState.AddModelError("", "An unexpected error occurred.");
                 return View();
             }
         }
-
         // GET: Booking/Edit/5
         public ActionResult Edit(int id)
         {
