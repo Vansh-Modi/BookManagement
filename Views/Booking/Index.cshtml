@@ -1,27 +1,55 @@
-﻿@model IEnumerable<movieBooking.Models.Movie>
+﻿﻿@model IEnumerable<movieBooking.Models.Movie>
+@using System.Data
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Booking Management Dashboard</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create")  |
+    @Html.ActionLink("Update Profile", "../Login/Edit")  |
+    @Html.ActionLink("Sign Out", "../Movie/Index")
 </p>
 <table class="table">
     <tr>
-        <th></th>
+        <th>Movie Name</th>
+        <th>Movie Category</th>
+        <th>Rate</th>
+        <th>No Of Tickets</th>
+        <th>Total Amount</th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-        </td>
-    </tr>
-}
-
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.Movie_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.Cat_Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.rate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.no_of_Tickets)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.Movie_name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }
+    }
 </table>

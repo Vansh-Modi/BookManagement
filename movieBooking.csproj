@@ -280,6 +280,7 @@
     <Content Include="Views\Login\Create.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Booking\Index.cshtml" />
+    <Content Include="Views\Login\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

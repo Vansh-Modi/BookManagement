@@ -10,9 +10,6 @@ namespace movieBooking.Controllers
 {
     public class MovieController : Controller
     {
-
-
-
         // GET: Movie
         public ActionResult Index(string searchCategory)
         {
@@ -140,7 +137,7 @@ namespace movieBooking.Controllers
                 TempData["Message"] = "Movie deleted successfully.";
             else
                 TempData["Message"] = "Failed to delete the movie.";
-            return View();
+            return RedirectToAction("Index");
         }
 
         // POST: Movie/Delete/5
@@ -161,7 +158,7 @@ namespace movieBooking.Controllers
                     else
                     {
                         ViewBag.Message = "Failed to delete the movie.";
-                        return View();
+                        return RedirectToAction("Index");
                     }
                 }
                 // TODO: Add delete logic here

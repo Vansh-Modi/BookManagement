@@ -12,11 +12,14 @@ namespace movieBooking.Controllers
         // GET: Booking
         public ActionResult Index()
         {
-            if(Session["UserID"] == null)
+            if (Session["UserID"] == null)
             {
                 return RedirectToAction("Login", "Login");
             }
-            return View();
+
+            Movie booking = new Movie();
+            List<Movie> bookings = booking.fnDisplayBooking();
+            return View(bookings);
         }
 
         // GET: Booking/Details/5

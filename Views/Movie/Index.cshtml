@@ -61,9 +61,9 @@
                     @Html.DisplayFor(modelItem => item.cd.rate)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "EditMovie", new { id = item.cd.Movie_ID }) |
+                    @Html.ActionLink("Edit", "Edit", new { id = item.cd.Movie_ID }) |
                     @Html.ActionLink("Book Tickets", "Details", new { Movie_ID = item.cd.Movie_ID, Cat_ID = item.cd.Cat_ID }) |
-                    @Html.ActionLink("Delete", "DeleteMovie", new { id = item.cd.Movie_ID })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.cd.Movie_ID })
                 </td>
             </tr>
         }

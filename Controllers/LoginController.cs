@@ -30,13 +30,35 @@ namespace movieBooking.Controllers
 
         // POST: Login/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(LoginModel loginModel)
         {
             try
             {
-                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    int UserID = loginModel.fnAddUsers(loginModel);
+                    System.Diagnostics.Debug.WriteLine("Error : " + UserID);
+                    if (UserID != 0)
+                    {
+                        Session["UserID"] = UserID;
+                    }
+                    if (Session["SelectedMoiveID"] != null || Session["SelectedCategoryID"] != null)
+                    {
+                        int Movie_ID = Convert.ToInt32(Session["SelectedMovieID"]);
+                        int Cat_ID = Convert.ToInt32(Session["SelectedMovieID"]);
 
-                return RedirectToAction("Index");
+                        Session["SelectedMovieID"] = Movie_ID;
+                        Session["SelectedCategoryID"] = Cat_ID;
+
+                        return RedirectToAction("Create", "Booking");
+                    }
+                    return RedirectToAction("Index", "Booking");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid Username or Password.");
+                }
+                return View();
             }
             catch
             {
@@ -44,13 +66,13 @@ namespace movieBooking.Controllers
             }
         }
 
-        // GET: Login/Create
+        // GET: Login/Login
         public ActionResult Login()
         {
             return View();
         }
 
-        // POST: Login/Create
+        // POST: Login/Login
         [HttpPost]
         public ActionResult Login(LoginModel loginModel)
         {
@@ -60,18 +82,19 @@ namespace movieBooking.Controllers
                 {
                     LoginModel userLogin = new LoginModel();
                     int UserID = userLogin.fnLogin(loginModel);
-                    System.Diagnostics.Debug.WriteLine("Attempting login for Password: " + UserID);
+
                     if (UserID != 0)
                     {
                         Session["UserID"] = UserID;
+
                         if (Session["SelectedMoiveID"] != null || Session["SelectedCategoryID"] != null)
                         {
                             int Movie_ID = Convert.ToInt32(Session["SelectedMovieID"]);
                             int Cat_ID = Convert.ToInt32(Session["SelectedMovieID"]);
+
                             Session["SelectedMovieID"] = Movie_ID;
                             Session["SelectedCategoryID"] = Cat_ID;
-                            System.Diagnostics.Debug.WriteLine("Attempting login for Movie: " + Movie_ID);
-                            System.Diagnostics.Debug.WriteLine("Attempting login for Catergory: " + Cat_ID);
+
                             return RedirectToAction("Create", "Booking");
                         }
                         return RedirectToAction("Index", "Booking");
@@ -91,20 +114,31 @@ namespace movieBooking.Controllers
         }
 
         // GET: Login/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
-            return View();
+            id = 19;
+            if (id == null)
+                return RedirectToAction("Login");
+            LoginModel model = new LoginModel();
+            if (model == null || model.User_ID == 0)
+                return RedirectToAction("Login");
+            return View(model);
         }
 
         // POST: Login/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(LoginModel model)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    LoginModel updateUser = new LoginModel();
+                    bool result = updateUser.fnUpdateUser(model);
+                    if (result)
+                        ViewBag.Message = "User updated successfully.";
+                }
+                return RedirectToAction("Login");
             }
             catch
             {

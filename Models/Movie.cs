@@ -43,24 +43,6 @@ namespace movieBooking.Models
                 }
             }
         }
-        public bool fnAddUsers()
-        {
-            using (SqlConnection conn = new SqlConnection(cd.Connection()))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("AddUsers", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("Name", cd.User_Name);
-                    cmd.Parameters.AddWithValue("Email", cd.Email_ID);
-                    cmd.Parameters.AddWithValue("Phone", cd.User_password);
-                    cmd.Parameters.AddWithValue("City", cd.City);
-                    cmd.Parameters.AddWithValue("Password", cd.Phone);
-                    int i = cmd.ExecuteNonQuery();
-                    return i > 0;
-                }
-            }
-        }
         public bool fnAddBooking()
         {
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
@@ -78,39 +60,6 @@ namespace movieBooking.Models
                     return i > 0;
                 }
             }
-        }
-        public List<Movie> fnDisplayUsers()
-        {
-            List<Movie> userList = new List<Movie>();
-            using (SqlConnection conn = new SqlConnection(cd.Connection()))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("DisplayUsers", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                    {
-                        DataTable dt = new DataTable();
-                        adapter.Fill(dt);
-                        foreach (DataRow row in dt.Rows)
-                        {
-                            ConnectionData userData = new ConnectionData
-                            {
-                                User_ID = Convert.ToInt32(row["User_ID"]),
-                                User_Name = row["User_Name"].ToString(),
-                                Email_ID = row["Email_ID"].ToString(),
-                                Phone = row["PhoneNo"].ToString(),
-                                City = row["City"].ToString(),
-                                User_password = row["User_Password"].ToString()
-                            };
-                            Movie movie = new Movie();
-                            movie.cd = userData;
-                            userList.Add(movie);
-                        }
-                    }
-                }
-            }
-            return userList;
         }
         public List<Movie> fnDisplayMovie(string search)
         {
@@ -167,13 +116,16 @@ namespace movieBooking.Models
                         {
                             ConnectionData movieData = new ConnectionData
                             {
-                                booking_ID = Convert.ToInt32(row["Movie_ID"]),
-
+                                booking_ID = Convert.ToInt32(row["booking_ID"]),
                                 User_ID = Convert.ToInt32(row["User_ID"]),
                                 Movie_ID = Convert.ToInt32(row["Movie_ID"]),
                                 Cat_ID = Convert.ToInt32(row["Cat_ID"]),
                                 amount = Convert.ToInt32(row["amount"]),
-                                no_of_Tickets = Convert.ToInt32(row["no_of_Tickets"])
+                                no_of_Tickets = Convert.ToInt32(row["no_of_Tickets"]),
+                                Cat_Type = row["Cat_Type"].ToString(),
+                                Release_Date = row["date"].ToString(),
+                                Movie_name = row["movie_name"].ToString(),
+                                rate = Convert.ToInt32(row["rate"])
                             };
                             Movie movie = new Movie();
                             movie.cd = movieData;
@@ -224,20 +176,6 @@ namespace movieBooking.Models
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("Movie_ID", movieId);
-                    int i = cmd.ExecuteNonQuery();
-                    return i > 0;
-                }
-            }
-        }
-        public bool fnDeleteUser(int userId)
-        {
-            using (SqlConnection conn = new SqlConnection(cd.Connection()))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("DeleteUser", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("User_ID", userId);
                     int i = cmd.ExecuteNonQuery();
                     return i > 0;
                 }
