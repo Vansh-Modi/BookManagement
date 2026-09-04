@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Security.Policy;
 using System.Web;
 
 namespace movieBooking.Models
@@ -11,6 +10,7 @@ namespace movieBooking.Models
     public class Movie
     {
         public ConnectionData cd { get; set; } = new ConnectionData();
+
         public bool fnAddCategory()
         {
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
@@ -25,6 +25,7 @@ namespace movieBooking.Models
                 }
             }
         }
+
         public bool fnAddMovie()
         {
             DateTime parsedDate = DateTime.Parse(cd.Release_Date);
@@ -43,12 +44,13 @@ namespace movieBooking.Models
                 }
             }
         }
+
         public bool fnAddBooking()
         {
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
             {
                 conn.Open();
-                using(SqlCommand cmd = new SqlCommand("GetRate", conn))
+                using (SqlCommand cmd = new SqlCommand("GetRate", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("Movie_ID", cd.Movie_ID);
@@ -72,6 +74,7 @@ namespace movieBooking.Models
                 }
             }
         }
+
         public List<Movie> fnDisplayMovie(string search)
         {
             List<Movie> movies = new List<Movie>();
@@ -97,7 +100,7 @@ namespace movieBooking.Models
                             {
                                 Movie_ID = Convert.ToInt32(row["Movie_ID"]),
                                 Movie_name = row["Movie_Name"].ToString(),
-                                Release_Date = parseDate.ToString("yyyy-MM-dd"), // Fixed MM for months
+                                Release_Date = parseDate.ToString("yyyy-MM-dd"),
                                 Cat_ID = Convert.ToInt32(row["Cat_ID"]),
                                 rate = Convert.ToInt32(row["Rate"])
                             };
@@ -111,8 +114,7 @@ namespace movieBooking.Models
             return movies;
         }
 
-        
-        public List<Movie> fnDisplayBooking()
+        public List<Movie> fnDisplayBooking(int id)
         {
             List<Movie> movies = new List<Movie>();
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
@@ -121,6 +123,7 @@ namespace movieBooking.Models
                 using (SqlCommand cmd = new SqlCommand("DisplayBooking", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("User_ID", id);
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         DataTable dt = new DataTable();
@@ -149,6 +152,7 @@ namespace movieBooking.Models
             }
             return movies;
         }
+
         public DataTable fnGetCategoryDropdown()
         {
             DataTable dt = new DataTable();
@@ -166,6 +170,25 @@ namespace movieBooking.Models
             }
             return dt;
         }
+
+        public DataTable fnGetMovieDropdown()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(cd.Connection()))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("DisplayMovieDropdown", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+            }
+            return dt;
+        }
+
         public bool fnDeleteBooking(int bookingId)
         {
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
@@ -180,6 +203,7 @@ namespace movieBooking.Models
                 }
             }
         }
+
         public bool fnDeleteMovie(int movieId)
         {
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
@@ -194,6 +218,7 @@ namespace movieBooking.Models
                 }
             }
         }
+
         public bool fnGetMovieID(int movieId)
         {
             using (SqlConnection conn = new SqlConnection(cd.Connection()))
@@ -203,10 +228,72 @@ namespace movieBooking.Models
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("Movie_ID", movieId);
-
-                    // Use ExecuteScalar if checking for existence or fetching a scalar value
                     object result = cmd.ExecuteScalar();
                     return result != null && result != DBNull.Value;
+                }
+            }
+        }
+
+        public Movie fnGetBookingID(int bookingId)
+        {
+            Movie movie = null;
+            using (SqlConnection conn = new SqlConnection(cd.Connection()))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("GetBookingDetails", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("booking_ID", bookingId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            movie = new Movie();
+                            movie.cd.Movie_ID = Convert.ToInt32(reader["Movie_ID"]);
+                            movie.cd.Cat_ID = Convert.ToInt32(reader["Cat_ID"]);
+                            movie.cd.User_ID = Convert.ToInt32(reader["User_ID"]);
+                            movie.cd.no_of_Tickets = Convert.ToInt32(reader["number_of_Tickets"]);
+                            movie.cd.rate = Convert.ToInt32(reader["rate"]);
+                        }
+                    }
+                }
+            }
+            return movie;
+        }
+
+        public bool fnUpdateBooking(int bookingId)
+        {
+            using (SqlConnection conn = new SqlConnection(cd.Connection()))
+            {
+                conn.Open();
+
+                // Fetch the current rate for the selected movie to calculate the correct amount
+                using (SqlCommand cmdRate = new SqlCommand("GetRate", conn))
+                {
+                    cmdRate.CommandType = CommandType.StoredProcedure;
+                    cmdRate.Parameters.AddWithValue("Movie_ID", cd.Movie_ID);
+                    object result = cmdRate.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        cd.rate = Convert.ToInt32(result);
+                    }
+                }
+
+                using (SqlCommand cmd = new SqlCommand("UpdateBooking", conn))
+                {
+                    int amount = cd.no_of_Tickets * cd.rate;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Parameter names must match your stored procedure definition exactly
+                    cmd.Parameters.AddWithValue("Booking_ID", bookingId);
+                    cmd.Parameters.AddWithValue("User_ID", cd.User_ID);
+                    cmd.Parameters.AddWithValue("Movie_ID", cd.Movie_ID);
+                    cmd.Parameters.AddWithValue("Cat_ID", cd.Cat_ID);
+                    cmd.Parameters.AddWithValue("no_of_tickets", cd.no_of_Tickets);
+                    cmd.Parameters.AddWithValue("amount", amount);
+
+                    int i = cmd.ExecuteNonQuery();
+                    return i > 0;
                 }
             }
         }

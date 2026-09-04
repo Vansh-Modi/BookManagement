@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using movieBooking.Models;
 
@@ -116,13 +117,17 @@ namespace movieBooking.Controllers
         // GET: Login/Edit/5
         public ActionResult Edit(int? id)
         {
-            id = 19;
-            if (id == null)
+            if (Session["UserID"] == null)
                 return RedirectToAction("Login");
-            LoginModel model = new LoginModel();
-            if (model == null || model.User_ID == 0)
-                return RedirectToAction("Login");
-            return View(model);
+
+            int user_ID = Convert.ToInt32(Session["UserID"]);
+            LoginModel loginModel = new LoginModel();
+
+            loginModel = loginModel.fnGetUserByID(user_ID);
+
+            if (loginModel == null)
+                return HttpNotFound();
+            return View(loginModel);
         }
 
         // POST: Login/Edit/5
@@ -131,18 +136,29 @@ namespace movieBooking.Controllers
         {
             try
             {
+                if (Session["UserID"] == null)
+                    return RedirectToAction("Login");
+
                 if (ModelState.IsValid)
                 {
+                    // Securely force the model's User_ID to match the active session user
+                    model.User_ID = Convert.ToInt32(Session["UserID"]);
+
                     LoginModel updateUser = new LoginModel();
                     bool result = updateUser.fnUpdateUser(model);
                     if (result)
+                    {
                         ViewBag.Message = "User updated successfully.";
+                        return RedirectToAction("Index", "Booking"); // Redirect back to booking dashboard instead of forcing re-login
+                    }
                 }
-                return RedirectToAction("Login");
+                ModelState.AddModelError("", "Invalid data. Please check the input fields.");
+                return View(model);
             }
             catch
             {
-                return View();
+                ModelState.AddModelError("", "An error occurred while updating the user. Please try again.");
+                return View(model);
             }
         }
 

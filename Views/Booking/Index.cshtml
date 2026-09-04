@@ -1,6 +1,5 @@
-﻿﻿@model IEnumerable<movieBooking.Models.Movie>
+﻿@model IEnumerable<movieBooking.Models.Movie>
 @using System.Data
-
 @{
     ViewBag.Title = "Index";
 }
@@ -12,6 +11,7 @@
     @Html.ActionLink("Update Profile", "../Login/Edit")  |
     @Html.ActionLink("Sign Out", "../Movie/Index")
 </p>
+
 <table class="table">
     <tr>
         <th>Movie Name</th>
@@ -19,6 +19,7 @@
         <th>Rate</th>
         <th>No Of Tickets</th>
         <th>Total Amount</th>
+        <th>Actions</th>
     </tr>
 
     @if (Model != null && Model.Any())
@@ -42,12 +43,8 @@
                     @Html.DisplayFor(modelItem => item.cd.amount)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.cd.Movie_name)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.cd.booking_ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.cd.booking_ID })
                 </td>
             </tr>
         }

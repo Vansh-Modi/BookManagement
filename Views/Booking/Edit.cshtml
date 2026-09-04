@@ -1,12 +1,12 @@
 ﻿@model movieBooking.Models.Movie
 @using System.Data
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Edit";
     DataTable movieTable = ViewBag.MovieDataTable as DataTable;
-    var sessionMovieId = Session["SelectedMovieID"] != null ? Session["SelectedMovieID"].ToString() : "";
+    var selectedMovieId = Model != null && Model.cd != null ? Model.cd.Movie_ID.ToString() : "";
 }
 
-<h2>Add Movie Booking</h2>
+<h2>Edit Movie Booking</h2>
 
 @using (Html.BeginForm())
 {
@@ -26,7 +26,7 @@
                     {
                         foreach (DataRow row in movieTable.Rows)
                         {
-                            var isSelected = row["Movie_ID"].ToString() == sessionMovieId ? "selected='selected'" : "";
+                            var isSelected = row["Movie_ID"].ToString() == selectedMovieId ? "selected='selected'" : "";
                             <option value="@row["Movie_ID"]"
                                     data-catid="@row["Cat_ID"]"
                                     data-cattype="@row["Cat_Type"]"
@@ -68,7 +68,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>
     </div>
@@ -90,7 +90,7 @@
         }
 
         $(function () {
-            // Trigger on page load in case a session pre-selected movie is active
+            // Trigger on page load to pre-populate category and rate for the existing booking
             updateMovieDetails();
 
             // Trigger when dropdown value changes

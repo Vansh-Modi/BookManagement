@@ -111,16 +111,50 @@ namespace movieBooking.Models
                 using (SqlCommand cmd = new SqlCommand("UpdateUser", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("User_ID", model.User_ID );
-                    cmd.Parameters.AddWithValue("User_Name", model.User_Name ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("Email_ID", model.cd.Email_ID ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("User_Password", model.User_password ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("Name", model.User_Name ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("Email", model.cd.Email_ID ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("Password", model.User_password ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("City", model.cd.City ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("PhoneNo", model.cd.Phone ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("Phone", model.cd.Phone ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("User_ID", model.User_ID);
+
                     int i = cmd.ExecuteNonQuery();
                     return i > 0;
                 }
             }
+        }
+        
+        public LoginModel fnGetUserByID(int userId)
+        {
+            LoginModel user = null;
+            using (SqlConnection conn = new SqlConnection(cd.Connection()))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("GetUserByID", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("User_ID", userId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            user = new LoginModel
+                            {
+                                User_ID = Convert.ToInt32(reader["User_ID"]),
+                                User_Name = reader["User_Name"].ToString(),
+                                User_password = reader["User_Password"].ToString(),
+                                cd = new ConnectionData
+                                {
+                                    Email_ID = reader["Email_ID"].ToString(),
+                                    Phone = reader["PhoneNo"].ToString(),
+                                    City = reader["City"].ToString()
+                                }
+                            };
+                        }
+                    }
+                }
+            }
+            return user;
         }
     }
 }
