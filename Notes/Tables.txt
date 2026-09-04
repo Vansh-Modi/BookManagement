@@ -1,24 +1,4 @@
-﻿CREATE TABLE [dbo].[Tbl_User] (
-    [User_ID]       INT          IDENTITY (1, 1) NOT NULL,
-    [User_Name]     VARCHAR (50) NOT NULL,
-    [Email_ID]      VARCHAR (50) NOT NULL,
-    [User_password] VARCHAR (15) NOT NULL,
-    [City]          VARCHAR (50) NOT NULL,
-    [PhoneNo]       VARCHAR (15) NOT NULL,
-    PRIMARY KEY CLUSTERED ([User_ID] ASC)
-);
-
-
-
-CREATE TABLE [dbo].[Tbl_Movie_Category] (
-    [Cat_ID]   INT          IDENTITY (1, 1) NOT NULL,
-    [Cat_Type] VARCHAR (50) NOT NULL,
-    PRIMARY KEY CLUSTERED ([Cat_ID] ASC)
-);
-
-
-
-CREATE TABLE [dbo].[Tbl_Booking] (
+﻿CREATE TABLE [dbo].[Tbl_Booking] (
     [booking_ID]    INT IDENTITY (1, 1) NOT NULL,
     [User_ID]       INT NOT NULL,
     [Cat_ID]        INT NOT NULL,
@@ -28,7 +8,7 @@ CREATE TABLE [dbo].[Tbl_Booking] (
     PRIMARY KEY CLUSTERED ([booking_ID] ASC)
 );
 
-
+==========================================================
 
 CREATE TABLE [dbo].[Tbl_Movie] (
     [Movie_ID]     INT          IDENTITY (1, 1) NOT NULL,
@@ -38,5 +18,26 @@ CREATE TABLE [dbo].[Tbl_Movie] (
     [rate]         INT          NOT NULL,
     PRIMARY KEY CLUSTERED ([Movie_ID] ASC),
     CONSTRAINT [FK_tbl_Category_ID] FOREIGN KEY ([Cat_ID]) REFERENCES [dbo].[Tbl_Movie_Category] ([Cat_ID])
+);
+
+==========================================================
+
+CREATE TABLE [dbo].[Tbl_Movie_Category] (
+    [Cat_ID]   INT          IDENTITY (1, 1) NOT NULL,
+    [Cat_Type] VARCHAR (50) NOT NULL,
+    PRIMARY KEY CLUSTERED ([Cat_ID] ASC)
+);
+
+==========================================================
+
+CREATE TABLE [dbo].[Tbl_User] (
+    [User_ID]       INT          IDENTITY (1, 1) NOT NULL,
+    [User_Name]     VARCHAR (50) NOT NULL,
+    [Email_ID]      VARCHAR (50) NOT NULL,
+    [User_password] VARCHAR (15) NOT NULL,
+    [City]          VARCHAR (50) NOT NULL,
+    [PhoneNo]       VARCHAR (15) NOT NULL,
+    PRIMARY KEY CLUSTERED ([User_ID] ASC),
+    UNIQUE NONCLUSTERED ([User_Name] ASC)
 );
 
