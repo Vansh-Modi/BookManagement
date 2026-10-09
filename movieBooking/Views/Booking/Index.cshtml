@@ -1,0 +1,52 @@
+﻿﻿@model IEnumerable<movieBooking.Models.Movie>
+@using System.Data
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Booking Management Dashboard</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")  |
+    @Html.ActionLink("Update Profile", "../Login/Edit")  |
+    @Html.ActionLink("Sign Out", "../Movie/Index")
+</p>
+
+<table class="table">
+    <tr>
+        <th>Movie Name</th>
+        <th>Movie Category</th>
+        <th>Rate</th>
+        <th>No Of Tickets</th>
+        <th>Total Amount</th>
+        <th>Actions</th>
+    </tr>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.Movie_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.Cat_Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.rate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.no_of_Tickets)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.amount)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.cd.booking_ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.cd.booking_ID })
+                </td>
+            </tr>
+        }
+    }
+</table>

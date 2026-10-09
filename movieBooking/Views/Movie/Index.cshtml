@@ -1,0 +1,81 @@
+﻿﻿@model IEnumerable<movieBooking.Models.Movie>
+@using System.Data
+
+@{
+    ViewBag.Title = "Movie Management Dashboard";
+}
+
+<h2>Movie Management Dashboard</h2>
+
+<p>
+    @Html.ActionLink("Add New Movie", "AddMovie") |
+    @Html.ActionLink("Book Tickets", "../Booking/Index") |
+    @Html.ActionLink("Profile", "../Login/Edit")
+</p>
+
+<!-- SEARCH / CATEGORY FILTER FORM -->
+@using (Html.BeginForm("Index", "Movie", FormMethod.Get))
+{
+    <div class="form-horizontal" style="margin-bottom: 20px;">
+        <div class="form-group">
+            <label class="control-label col-md-2">Filter by Category:</label>
+            <div class="col-md-6">
+                @Html.DropDownList(
+                    "searchCategory",
+                    (SelectList)ViewBag.CategoryList,
+                    "All Categories",
+                    new { @class = "form-control", @onchange = "this.form.submit();" })
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-default">Filter</button>
+                @Html.ActionLink("Reset", "Index", null, new { @class = "btn btn-secondary" })
+            </div>
+        </div>
+    </div>
+}
+
+<hr />
+
+<!-- 1. MOVIES TABLE -->
+<h3>Movies List</h3>
+<table class="table">
+    <tr>
+        <th>Movie Name</th>
+        <th>Release Date</th>
+        <th>Rate</th>
+        <th>Actions</th>
+    </tr>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.Movie_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.Release_Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cd.rate)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.cd.Movie_ID }) |
+                    @Html.ActionLink("Book Tickets", "Details", new { Movie_ID = item.cd.Movie_ID, Cat_ID = item.cd.Cat_ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.cd.Movie_ID })
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="4" class="text-center text-muted">No movies found.</td>
+        </tr>
+    }
+</table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

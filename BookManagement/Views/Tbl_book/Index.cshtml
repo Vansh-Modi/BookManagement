@@ -1,0 +1,69 @@
+﻿@model IEnumerable<BookManagement.Models.Tbl_book>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.book_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.book_pub_date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ISBN_No)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tbl_author.author_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tbl_bookType.booktype_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tbl_publisher.pub_name)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.book_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.book_pub_date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ISBN_No)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tbl_author.author_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tbl_bookType.booktype_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tbl_publisher.pub_name)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.book_id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.book_id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.book_id })
+        </td>
+    </tr>
+}
+
+</table>
