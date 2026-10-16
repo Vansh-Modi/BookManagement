@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MovieBookingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Tbl_Booking">
+          <Key>
+            <PropertyRef Name="booking_ID" />
+          </Key>
+          <Property Name="booking_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="User_ID" Type="int" Nullable="false" />
+          <Property Name="Cat_ID" Type="int" Nullable="false" />
+          <Property Name="Movie_ID" Type="int" Nullable="false" />
+          <Property Name="no_of_Tickets" Type="int" Nullable="false" />
+          <Property Name="amount" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tbl_Movie">
+          <Key>
+            <PropertyRef Name="Movie_ID" />
+          </Key>
+          <Property Name="Movie_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Movie_name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Release_Date" Type="date" Nullable="false" />
+          <Property Name="Cat_ID" Type="int" Nullable="false" />
+          <Property Name="rate" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tbl_Movie_Category">
+          <Key>
+            <PropertyRef Name="Cat_ID" />
+          </Key>
+          <Property Name="Cat_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cat_Type" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tbl_User">
+          <Key>
+            <PropertyRef Name="User_ID" />
+          </Key>
+          <Property Name="User_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="User_Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email_ID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="User_password" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="PhoneNo" Type="varchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <Association Name="3">
+          <End Role="Tbl_Movie_Category" Type="Self.Tbl_Movie_Category" Multiplicity="1" />
+          <End Role="Tbl_Booking" Type="Self.Tbl_Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Movie_Category">
+              <PropertyRef Name="Cat_ID" />
+            </Principal>
+            <Dependent Role="Tbl_Booking">
+              <PropertyRef Name="Cat_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Booking_ToTable">
+          <End Role="Tbl_User" Type="Self.Tbl_User" Multiplicity="1" />
+          <End Role="Tbl_Booking" Type="Self.Tbl_Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_User">
+              <PropertyRef Name="User_ID" />
+            </Principal>
+            <Dependent Role="Tbl_Booking">
+              <PropertyRef Name="User_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Booking_ToTable_1">
+          <End Role="Tbl_Movie" Type="Self.Tbl_Movie" Multiplicity="1" />
+          <End Role="Tbl_Booking" Type="Self.Tbl_Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Movie">
+              <PropertyRef Name="Movie_ID" />
+            </Principal>
+            <Dependent Role="Tbl_Booking">
+              <PropertyRef Name="Movie_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Category_ID">
+          <End Role="Tbl_Movie_Category" Type="Self.Tbl_Movie_Category" Multiplicity="1" />
+          <End Role="Tbl_Movie" Type="Self.Tbl_Movie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Movie_Category">
+              <PropertyRef Name="Cat_ID" />
+            </Principal>
+            <Dependent Role="Tbl_Movie">
+              <PropertyRef Name="Cat_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MovieBookingModelStoreContainer">
+          <EntitySet Name="Tbl_Booking" EntityType="Self.Tbl_Booking" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Movie" EntityType="Self.Tbl_Movie" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Movie_Category" EntityType="Self.Tbl_Movie_Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_User" EntityType="Self.Tbl_User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="3" Association="Self.3">
+            <End Role="Tbl_Movie_Category" EntitySet="Tbl_Movie_Category" />
+            <End Role="Tbl_Booking" EntitySet="Tbl_Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Booking_ToTable" Association="Self.FK_Tbl_Booking_ToTable">
+            <End Role="Tbl_User" EntitySet="Tbl_User" />
+            <End Role="Tbl_Booking" EntitySet="Tbl_Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Booking_ToTable_1" Association="Self.FK_Tbl_Booking_ToTable_1">
+            <End Role="Tbl_Movie" EntitySet="Tbl_Movie" />
+            <End Role="Tbl_Booking" EntitySet="Tbl_Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Category_ID" Association="Self.FK_tbl_Category_ID">
+            <End Role="Tbl_Movie_Category" EntitySet="Tbl_Movie_Category" />
+            <End Role="Tbl_Movie" EntitySet="Tbl_Movie" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MovieBookingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Tbl_Booking">
+          <Key>
+            <PropertyRef Name="booking_ID" />
+          </Key>
+          <Property Name="booking_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="User_ID" Type="Int32" Nullable="false" />
+          <Property Name="Cat_ID" Type="Int32" Nullable="false" />
+          <Property Name="Movie_ID" Type="Int32" Nullable="false" />
+          <Property Name="no_of_Tickets" Type="Int32" Nullable="false" />
+          <Property Name="amount" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Tbl_Movie_Category" Relationship="Self.C3" FromRole="Tbl_Booking" ToRole="Tbl_Movie_Category" />
+          <NavigationProperty Name="Tbl_User" Relationship="Self.FK_Tbl_Booking_ToTable" FromRole="Tbl_Booking" ToRole="Tbl_User" />
+          <NavigationProperty Name="Tbl_Movie" Relationship="Self.FK_Tbl_Booking_ToTable_1" FromRole="Tbl_Booking" ToRole="Tbl_Movie" />
+        </EntityType>
+        <EntityType Name="Tbl_Movie">
+          <Key>
+            <PropertyRef Name="Movie_ID" />
+          </Key>
+          <Property Name="Movie_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Movie_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Release_Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Cat_ID" Type="Int32" Nullable="false" />
+          <Property Name="rate" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Tbl_Booking" Relationship="Self.FK_Tbl_Booking_ToTable_1" FromRole="Tbl_Movie" ToRole="Tbl_Booking" />
+          <NavigationProperty Name="Tbl_Movie_Category" Relationship="Self.FK_tbl_Category_ID" FromRole="Tbl_Movie" ToRole="Tbl_Movie_Category" />
+        </EntityType>
+        <EntityType Name="Tbl_Movie_Category">
+          <Key>
+            <PropertyRef Name="Cat_ID" />
+          </Key>
+          <Property Name="Cat_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cat_Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Tbl_Booking" Relationship="Self.C3" FromRole="Tbl_Movie_Category" ToRole="Tbl_Booking" />
+          <NavigationProperty Name="Tbl_Movie" Relationship="Self.FK_tbl_Category_ID" FromRole="Tbl_Movie_Category" ToRole="Tbl_Movie" />
+        </EntityType>
+        <EntityType Name="Tbl_User">
+          <Key>
+            <PropertyRef Name="User_ID" />
+          </Key>
+          <Property Name="User_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="User_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="User_password" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PhoneNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Tbl_Booking" Relationship="Self.FK_Tbl_Booking_ToTable" FromRole="Tbl_User" ToRole="Tbl_Booking" />
+        </EntityType>
+        <Association Name="C3">
+          <End Role="Tbl_Movie_Category" Type="Self.Tbl_Movie_Category" Multiplicity="1" />
+          <End Role="Tbl_Booking" Type="Self.Tbl_Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Movie_Category">
+              <PropertyRef Name="Cat_ID" />
+            </Principal>
+            <Dependent Role="Tbl_Booking">
+              <PropertyRef Name="Cat_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Booking_ToTable">
+          <End Role="Tbl_User" Type="Self.Tbl_User" Multiplicity="1" />
+          <End Role="Tbl_Booking" Type="Self.Tbl_Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_User">
+              <PropertyRef Name="User_ID" />
+            </Principal>
+            <Dependent Role="Tbl_Booking">
+              <PropertyRef Name="User_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Booking_ToTable_1">
+          <End Role="Tbl_Movie" Type="Self.Tbl_Movie" Multiplicity="1" />
+          <End Role="Tbl_Booking" Type="Self.Tbl_Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Movie">
+              <PropertyRef Name="Movie_ID" />
+            </Principal>
+            <Dependent Role="Tbl_Booking">
+              <PropertyRef Name="Movie_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Category_ID">
+          <End Role="Tbl_Movie_Category" Type="Self.Tbl_Movie_Category" Multiplicity="1" />
+          <End Role="Tbl_Movie" Type="Self.Tbl_Movie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Movie_Category">
+              <PropertyRef Name="Cat_ID" />
+            </Principal>
+            <Dependent Role="Tbl_Movie">
+              <PropertyRef Name="Cat_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MovieBookingEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Tbl_Booking" EntityType="Self.Tbl_Booking" />
+          <EntitySet Name="Tbl_Movie" EntityType="Self.Tbl_Movie" />
+          <EntitySet Name="Tbl_Movie_Category" EntityType="Self.Tbl_Movie_Category" />
+          <EntitySet Name="Tbl_User" EntityType="Self.Tbl_User" />
+          <AssociationSet Name="C3" Association="Self.C3">
+            <End Role="Tbl_Movie_Category" EntitySet="Tbl_Movie_Category" />
+            <End Role="Tbl_Booking" EntitySet="Tbl_Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Booking_ToTable" Association="Self.FK_Tbl_Booking_ToTable">
+            <End Role="Tbl_User" EntitySet="Tbl_User" />
+            <End Role="Tbl_Booking" EntitySet="Tbl_Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Booking_ToTable_1" Association="Self.FK_Tbl_Booking_ToTable_1">
+            <End Role="Tbl_Movie" EntitySet="Tbl_Movie" />
+            <End Role="Tbl_Booking" EntitySet="Tbl_Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Category_ID" Association="Self.FK_tbl_Category_ID">
+            <End Role="Tbl_Movie_Category" EntitySet="Tbl_Movie_Category" />
+            <End Role="Tbl_Movie" EntitySet="Tbl_Movie" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MovieBookingModelStoreContainer" CdmEntityContainer="MovieBookingEntities1">
+          <EntitySetMapping Name="Tbl_Booking">
+            <EntityTypeMapping TypeName="MovieBookingModel.Tbl_Booking">
+              <MappingFragment StoreEntitySet="Tbl_Booking">
+                <ScalarProperty Name="booking_ID" ColumnName="booking_ID" />
+                <ScalarProperty Name="User_ID" ColumnName="User_ID" />
+                <ScalarProperty Name="Cat_ID" ColumnName="Cat_ID" />
+                <ScalarProperty Name="Movie_ID" ColumnName="Movie_ID" />
+                <ScalarProperty Name="no_of_Tickets" ColumnName="no_of_Tickets" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Movie">
+            <EntityTypeMapping TypeName="MovieBookingModel.Tbl_Movie">
+              <MappingFragment StoreEntitySet="Tbl_Movie">
+                <ScalarProperty Name="Movie_ID" ColumnName="Movie_ID" />
+                <ScalarProperty Name="Movie_name" ColumnName="Movie_name" />
+                <ScalarProperty Name="Release_Date" ColumnName="Release_Date" />
+                <ScalarProperty Name="Cat_ID" ColumnName="Cat_ID" />
+                <ScalarProperty Name="rate" ColumnName="rate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Movie_Category">
+            <EntityTypeMapping TypeName="MovieBookingModel.Tbl_Movie_Category">
+              <MappingFragment StoreEntitySet="Tbl_Movie_Category">
+                <ScalarProperty Name="Cat_ID" ColumnName="Cat_ID" />
+                <ScalarProperty Name="Cat_Type" ColumnName="Cat_Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_User">
+            <EntityTypeMapping TypeName="MovieBookingModel.Tbl_User">
+              <MappingFragment StoreEntitySet="Tbl_User">
+                <ScalarProperty Name="User_ID" ColumnName="User_ID" />
+                <ScalarProperty Name="User_Name" ColumnName="User_Name" />
+                <ScalarProperty Name="Email_ID" ColumnName="Email_ID" />
+                <ScalarProperty Name="User_password" ColumnName="User_password" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
